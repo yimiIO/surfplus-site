@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出发仪式计划 | SURFPLUS 石梅湾营地</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: #fff;
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
+            color: white;
+            padding: 40px 20px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        .highlight {
+            background: rgba(255,255,255,0.2);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .progress-section {
+            background: white;
+            padding: 24px 20px;
+            margin: -20px 20px 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            position: relative;
+        }
+        .progress-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .progress-bar {
+            height: 12px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        .progress-text {
+            font-size: 13px;
+            color: #666;
+            text-align: right;
+        }
+        .unlock-info {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 16px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .unlock-info strong {
+            font-size: 15px;
+        }
+        .section {
+            padding: 0 20px 24px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .task-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .task-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102,126,234,0.15);
+        }
+        .task-card.required {
+            border-color: #00b4db;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2ff 100%);
+        }
+        .task-card.completed {
+            border-color: #51cf66;
+            background: linear-gradient(135deg, #f0fff4 0%, #e6ffc9 100%);
+        }
+        .task-card .badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-required {
+            background: #00b4db;
+            color: white;
+        }
+        .badge-optional {
+            background: #f0f0f0;
+            color: #666;
+        }
+        .badge-completed {
+            background: #51cf66;
+            color: white;
+        }
+        .task-card h3 {
+            font-size: 17px;
+            color: #333;
+            margin-bottom: 8px;
+            padding-right: 60px;
+        }
+        .task-card p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+        .task-card .task-list {
+            list-style: none;
+            font-size: 13px;
+            color: #555;
+            line-height: 2;
+        }
+        .task-card .task-list li::before {
+            content: "○ ";
+            color: #999;
+        }
+        .task-card.completed .task-list li::before {
+            content: "✓ ";
+            color: #51cf66;
+        }
+        .task-card .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .reward-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            margin: 20px;
+            border-radius: 16px;
+        }
+        .reward-section h2 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        .reward-section .reward-list {
+            text-align: left;
+            margin-top: 20px;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 12px;
+        }
+        .reward-section .reward-list li {
+            list-style: none;
+            padding: 8px 0;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .reward-section .reward-list li::before {
+            content: "✓ ";
+            color: #51cf66;
+            font-weight: bold;
+        }
+        .reward-section.locked {
+            background: #f5f5f5;
+            color: #999;
+        }
+        .reward-section.locked .reward-list {
+            background: #e0e0e0;
+        }
+        .reward-section.locked .reward-list li::before {
+            content: "○ ";
+            color: #ccc;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 20px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            text-align: center;
+        }
+        .modal-content h3 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        .modal-content p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .modal-content .close-btn {
+            background: #f5f5f5;
+            color: #333;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        .gen-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 16px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .gen-card h4 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+        .gen-card .field {
+            margin-bottom: 16px;
+        }
+        .gen-card .field label {
+            font-size: 12px;
+            opacity: 0.8;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .gen-card .field div {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+            margin-bottom: 16px;
+            font-family: inherit;
+        }
+        .textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .checkbox-group {
+            text-align: left;
+            margin: 16px 0;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏄 出发仪式计划</h1>
+            <p class="subtitle">SURFPLUS 石梅湾营地 · 2026 年 4 月</p>
+            <div class="highlight">
+                认真准备的人，更值得被认真接住
+            </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-section">
+            <div class="progress-title">
+                📊 你的进度
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 / 5 完成</div>
+            <div class="unlock-info">
+                <strong>🎁 解锁营地礼遇</strong><br>
+                必做任务 (2 项) + 任选任务 (1 项) = 解锁全部礼遇
+            </div>
+        </div>
+
+        <!-- Required Tasks -->
+        <div class="section">
+            <div class="section-title">
+                ⭐ 必做任务
+            </div>
+
+            <!-- Task 1 -->
+            <div class="task-card required" id="task1">
+                <span class="badge badge-required">必做</span>
+                <h3>1. 课前准备</h3>
+                <p>训练，从出发前开始</p>
+                <ul class="task-list">
+                    <li>观看理论课视频</li>
+                    <li>阅读安全须知</li>
+                    <li>上传居家起乘视频</li>
+                </ul>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="openModal('studyModal')">去学习</button>
+                    <button class="btn btn-secondary" onclick="openModal('videoModal')">上传视频</button>
+                    <button class="btn btn-primary" onclick="completeTask('task1')">完成本项</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optional Tasks -->
+        <div class="section">
+            <div class="section-title">
+                🎯 任选任务（完成 1 项即可）
+            </div>
+
+            <!-- Task 2 -->
+            <div class="task-card" id="task2">
+                <span class="badge badge-optional">任选</span>
+                <h3>2. 冲浪目标计划</h3>
+                <p>这次，你想带走什么</p>
+                <ul class="task-list">
+                    <li>写下这次最想完成什么</li>
+                    <li>写下最怕什么</li>
+                    <li>生成目标卡发朋友圈</li>
+                </ul>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="openModal('goalModal')">生成目标卡</button>
+                    <button class="btn btn-secondary" onclick="shareWechat()">发朋友圈</button>
+                    <button class="btn btn-primary" onclick="completeTask('task2')">完成本项</button>
+                </div>
+            </div>
+
+            <!-- Task 3 -->
+            <div class="task-card" id="task3">
+                <span class="badge badge-optional">任选</span>
+                <h3>3. 出发行程卡</h3>
+                <p>告诉老朋友，你要去海边了</p>
+                <ul class="task-list">
+                    <li>填写出发时间和地点</li>
+                    <li>写一句出发的话</li>
+                    <li>生成行程卡通知朋友</li>
+                </ul>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="openModal('tripModal')">生成行程卡</button>
+                    <button class="btn btn-secondary" onclick="shareWechat()">发给朋友</button>
+                    <button class="btn btn-primary" onclick="completeTask('task3')">完成本项</button>
+                </div>
+            </div>
+
+            <!-- Task 4 -->
+            <div class="task-card" id="task4">
+                <span class="badge badge-optional">任选</span>
+                <h3>4. 朋友见证</h3>
+                <p>在出发前，听听老朋友会对你说什么</p>
+                <ul class="task-list">
+                    <li>生成邀请页</li>
+                    <li>邀请朋友留言（匿名/实名）</li>
+                    <li>收集 3 条朋友留言</li>
+                </ul>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="openModal('friendModal')">生成邀请页</button>
+                    <button class="btn btn-secondary" onclick="checkMessages()">查看留言</button>
+                    <button class="btn btn-primary" onclick="completeTask('task4')">完成本项</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reward Section -->
+        <div class="reward-section locked" id="rewardSection">
+            <h2>🎁 营地礼遇</h2>
+            <p>完成必做任务 + 任选 1 项即可解锁</p>
+            <ul class="reward-list">
+                <li>免费床位房（按课程天数）</li>
+                <li>营地标间 9 折券</li>
+                <li>免费咖啡券 ×1</li>
+                <li>装备优先选择权</li>
+                <li>结业抽奖资格</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            SURFPLUS 冲浪家 · 石梅社区<br>
+            活动咨询：学员群内提问
+        </div>
+    </div>
+
+    <!-- Modals -->
+    
+    <!-- Study Modal -->
+    <div class="modal" id="studyModal">
+        <div class="modal-content">
+            <h3>📚 课前学习</h3>
+            <p>完成以下内容后，点击"我已完成"</p>
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="study1">
+                    <span>观看理论课视频（15 分钟）</span>
+                </label>
+                <label>
+                    <input type="checkbox" id="study2">
+                    <span>阅读安全须知（5 分钟）</span>
+                </label>
+            </div>
+            <button class="btn btn-primary" style="width:100%" onclick="confirmStudy()">我已完成</button>
+            <button class="close-btn" onclick="closeModal('studyModal')">稍后再说</button>
+        </div>
+    </div>
+
+    <!-- Video Modal -->
+    <div class="modal" id="videoModal">
+        <div class="modal-content">
+            <h3>📹 上传居家起乘视频</h3>
+            <p>录制一段你在家练习起乘的视频（30 秒以内）</p>
+            <textarea class="textarea" placeholder="或者粘贴视频链接（小红书/抖音/云盘）"></textarea>
+            <button class="btn btn-primary" style="width:100%" onclick="confirmVideo()">提交视频</button>
+            <button class="close-btn" onclick="closeModal('videoModal')">稍后再说</button>
+        </div>
+    </div>
+
+    <!-- Goal Modal -->
+    <div class="modal" id="goalModal">
+        <div class="modal-content">
+            <h3>🎯 我的冲浪目标</h3>
+            <textarea class="textarea" id="goalText" placeholder="这次我最想完成什么..."></textarea>
+            <textarea class="textarea" id="fearText" placeholder="我最怕什么..."></textarea>
+            <textarea class="textarea" id="becomeText" placeholder="我想变成什么样子..."></textarea>
+            <button class="btn btn-primary" style="width:100%" onclick="generateGoalCard()">生成目标卡</button>
+            <button class="close-btn" onclick="closeModal('goalModal')">稍后再说</button>
+        </div>
+    </div>
+
+    <!-- Goal Card Result -->
+    <div class="modal" id="goalCardModal">
+        <div class="modal-content">
+            <h3>🎯 我的冲浪目标卡</h3>
+            <div class="gen-card" id="goalCardDisplay">
+                <h4>本次冲浪之旅</h4>
+                <div class="field">
+                    <label>最想完成</label>
+                    <div id="cardGoal"></div>
+                </div>
+                <div class="field">
+                    <label>最害怕</label>
+                    <div id="cardFear"></div>
+                </div>
+                <div class="field">
+                    <label>想成为</label>
+                    <div id="cardBecome"></div>
+                </div>
+            </div>
+            <button class="btn btn-primary" style="width:100%" onclick="saveGoalCard()">保存图片</button>
+            <button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="shareWechat()">发朋友圈</button>
+            <button class="close-btn" onclick="closeModal('goalCardModal')">关闭</button>
+        </div>
+    </div>
+
+    <!-- Trip Modal -->
+    <div class="modal" id="tripModal">
+        <div class="modal-content">
+            <h3>🌊 出发行程卡</h3>
+            <textarea class="textarea" id="tripTime" placeholder="出发时间：例如 4 月 15 日"></textarea>
+            <textarea class="textarea" id="tripLocation" placeholder="目的地：海南万宁石梅湾"></textarea>
+            <textarea class="textarea" id="tripQuote" placeholder="一句话：这次不是去玩，是认真学一次冲浪"></textarea>
+            <button class="btn btn-primary" style="width:100%" onclick="generateTripCard()">生成行程卡</button>
+            <button class="close-btn" onclick="closeModal('tripModal')">稍后再说</button>
+        </div>
+    </div>
+
+    <!-- Trip Card Result -->
+    <div class="modal" id="tripCardModal">
+        <div class="modal-content">
+            <h3>🌊 我要去海边了</h3>
+            <div class="gen-card" id="tripCardDisplay">
+                <h4>出发通知</h4>
+                <div class="field">
+                    <label>时间</label>
+                    <div id="cardTime"></div>
+                </div>
+                <div class="field">
+                    <label>地点</label>
+                    <div id="cardLocation"></div>
+                </div>
+                <div class="field">
+                    <label>心情</label>
+                    <div id="cardQuote"></div>
+                </div>
+            </div>
+            <button class="btn btn-primary" style="width:100%" onclick="saveTripCard()">保存图片</button>
+            <button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="shareWechat()">发给朋友</button>
+            <button class="close-btn" onclick="closeModal('tripCardModal')">关闭</button>
+        </div>
+    </div>
+
+    <!-- Friend Modal -->
+    <div class="modal" id="friendModal">
+        <div class="modal-content">
+            <h3>💌 朋友见证</h3>
+            <p>生成邀请页，让朋友给你留言打气</p>
+            <p style="font-size:12px;color:#999">朋友可以匿名或实名留言，说说对你的祝福和期待</p>
+            <div class="gen-card" style="background:#f8f9fa;color:#333">
+                <h4>你的专属邀请链接</h4>
+                <div style="font-size:12px;word-break:break-all;margin-top:8px">
+                    https://surfplus.com/friend/your-code
+                </div>
+            </div>
+            <button class="btn btn-primary" style="width:100%" onclick="copyLink()">复制链接</button>
+            <button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="shareWechat()">分享给朋友</button>
+            <button class="close-btn" onclick="closeModal('friendModal')">稍后再说</button>
+        </div>
+    </div>
+
+    <!-- Messages Modal -->
+    <div class="modal" id="messagesModal">
+        <div class="modal-content">
+            <h3>💬 朋友留言</h3>
+            <p>已收到 <strong id="msgCount">0</strong> 条留言</p>
+            <div style="text-align:left;margin:20px 0;max-height:300px;overflow-y:auto">
+                <div style="padding:12px;background:#f8f9fa;border-radius:8px;margin-bottom:8px">
+                    <div style="font-size:13px;font-weight:600">阿明</div>
+                    <div style="font-size:13px;color:#666;margin-top:4px">你一定能做到的！等你回来分享故事！</div>
+                </div>
+                <div style="padding:12px;background:#f8f9fa;border-radius:8px;margin-bottom:8px">
+                    <div style="font-size:13px;font-weight:600">匿名用户</div>
+                    <div style="font-size:13px;color:#666;margin-top:4px">注意安全，享受海浪！</div>
+                </div>
+            </div>
+            <button class="close-btn" onclick="closeModal('messagesModal')">关闭</button>
+        </div>
+    </div>
+
+    <!-- Unlock Success Modal -->
+    <div class="modal" id="unlockModal">
+        <div class="modal-content">
+            <h3>🎉 恭喜解锁！</h3>
+            <p>你已完成所有任务，获得以下营地礼遇：</p>
+            <div class="gen-card">
+                <div style="padding:8px 0">✓ 免费床位房（按课程天数）</div>
+                <div style="padding:8px 0">✓ 营地标间 9 折券</div>
+                <div style="padding:8px 0">✓ 免费咖啡券 ×1</div>
+                <div style="padding:8px 0">✓ 装备优先选择权</div>
+                <div style="padding:8px 0">✓ 结业抽奖资格</div>
+            </div>
+            <p style="font-size:12px;color:#999">入住时向前台出示本页面即可核销</p>
+            <button class="btn btn-primary" style="width:100%" onclick="closeModal('unlockModal')">我知道了</button>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let completedTasks = [];
+        const requiredTasks = ['task1'];
+        const optionalTasks = ['task2', 'task3', 'task4'];
+
+        // Update progress
+        function updateProgress() {
+            const total = 5; // 2 required subtasks + 3 optional choices
+            const current = completedTasks.length;
+            const percent = (current / total) * 100;
+            
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = `${current} / ${total} 完成`;
+
+            // Check unlock
+            const hasRequired = completedTasks.includes('task1');
+            const hasOptional = optionalTasks.some(t => completedTasks.includes(t));
+            
+            if (hasRequired && hasOptional) {
+                document.getElementById('rewardSection').classList.remove('locked');
+                setTimeout(() => openModal('unlockModal'), 500);
+            }
+        }
+
+        // Complete task
+        function completeTask(taskId) {
+            if (!completedTasks.includes(taskId)) {
+                completedTasks.push(taskId);
+                document.getElementById(taskId).classList.add('completed');
+                
+                // Update badge
+                const badge = document.getElementById(taskId).querySelector('.badge');
+                badge.className = 'badge badge-completed';
+                badge.textContent = '已完成';
+                
+                updateProgress();
+            }
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // Study confirm
+        function confirmStudy() {
+            const s1 = document.getElementById('study1').checked;
+            const s2 = document.getElementById('study2').checked;
+            if (s1 && s2) {
+                closeModal('studyModal');
+                alert('太棒了！理论学习完成 ✓');
+            } else {
+                alert('请先完成所有学习内容哦~');
+            }
+        }
+
+        // Video confirm
+        function confirmVideo() {
+            closeModal('videoModal');
+            alert('视频已提交 ✓');
+        }
+
+        // Generate goal card
+        function generateGoalCard() {
+            const goal = document.getElementById('goalText').value || '还没想好';
+            const fear = document.getElementById('fearText').value || '未知';
+            const become = document.getElementById('becomeText').value || '更好的自己';
+            
+            document.getElementById('cardGoal').textContent = goal;
+            document.getElementById('cardFear').textContent = fear;
+            document.getElementById('cardBecome').textContent = become;
+            
+            closeModal('goalModal');
+            openModal('goalCardModal');
+        }
+
+        function saveGoalCard() {
+            alert('已保存到相册 ✓');
+        }
+
+        // Generate trip card
+        function generateTripCard() {
+            const time = document.getElementById('tripTime').value || '待定';
+            const location = document.getElementById('tripLocation').value || '海南万宁石梅湾';
+            const quote = document.getElementById('tripQuote').value || '这次不是去玩，是认真学一次冲浪';
+            
+            document.getElementById('cardTime').textContent = time;
+            document.getElementById('cardLocation').textContent = location;
+            document.getElementById('cardQuote').textContent = quote;
+            
+            closeModal('tripModal');
+            openModal('tripCardModal');
+        }
+
+        function saveTripCard() {
+            alert('已保存到相册 ✓');
+        }
+
+        // Friend functions
+        function copyLink() {
+            navigator.clipboard.writeText('https://surfplus.com/friend/your-code');
+            alert('链接已复制 ✓');
+        }
+
+        function checkMessages() {
+            document.getElementById('msgCount').textContent = '2';
+            openModal('messagesModal');
+        }
+
+        // Share
+        function shareWechat() {
+            alert('点击右上角「...」分享到朋友圈/朋友');
+        }
+
+        // Close modal on outside click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
