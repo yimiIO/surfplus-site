@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>出发仪式计划 | SURFPLUS 石梅湾营地</title>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -412,7 +414,7 @@
                     <li>上传居家起乘视频</li>
                 </ul>
                 <div class="btn-group">
-                    <button class="btn btn-primary" onclick="openModal('studyModal')">去学习</button>
+                    <button class="btn btn-primary" onclick="openMiniProgram()">去学习</button>
                     <button class="btn btn-secondary" onclick="openModal('videoModal')">上传视频</button>
                     <button class="btn btn-primary" onclick="completeTask('task1')">完成本项</button>
                 </div>
@@ -740,7 +742,27 @@
         }
 
         function saveGoalCard() {
-            alert('已保存到相册 ✓');
+            const card = document.getElementById('goalCardDisplay');
+            html2canvas(card, {
+                scale: 3,
+                backgroundColor: null,
+                logging: false,
+                useCORS: true
+            }).then(canvas => {
+                // 转换为图片并下载
+                const imgURL = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = '我的冲浪目标卡.png';
+                link.href = imgURL;
+                link.click();
+                
+                // 微信环境提示长按保存
+                if (typeof wx !== 'undefined') {
+                    alert('图片已生成，长按图片可保存到相册');
+                } else {
+                    alert('图片已下载 ✓');
+                }
+            });
         }
 
         // Generate trip card
@@ -758,7 +780,25 @@
         }
 
         function saveTripCard() {
-            alert('已保存到相册 ✓');
+            const card = document.getElementById('tripCardDisplay');
+            html2canvas(card, {
+                scale: 3,
+                backgroundColor: null,
+                logging: false,
+                useCORS: true
+            }).then(canvas => {
+                const imgURL = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = '我的出发行程卡.png';
+                link.href = imgURL;
+                link.click();
+                
+                if (typeof wx !== 'undefined') {
+                    alert('图片已生成，长按图片可保存到相册');
+                } else {
+                    alert('图片已下载 ✓');
+                }
+            });
         }
 
         // Friend functions
@@ -772,9 +812,34 @@
             openModal('messagesModal');
         }
 
+        // Open Mini Program
+        function openMiniProgram() {
+            // 微信环境内
+            if (typeof wx !== 'undefined' && wx.miniProgram) {
+                wx.miniProgram.navigateTo({
+                    url: '/pages/course/theory?from=departure_ceremony'
+                });
+            } else {
+                // 非微信环境，提示复制小程序链接
+                const link = '#小程序://SURF+/SURF+/xESERFmKRKrkSWu';
+                navigator.clipboard.writeText(link).then(() => {
+                    alert('小程序链接已复制，请在微信中打开并粘贴到聊天窗口即可进入');
+                });
+            }
+        }
+
         // Share
-        function shareWechat() {
-            alert('点击右上角「...」分享到朋友圈/朋友');
+        function shareToWechat(type) {
+            if (typeof wx !== 'undefined' && wx.miniProgram) {
+                // 微信环境，直接分享
+                wx.miniProgram.postMessage({
+                    data: { type: type, action: 'share' }
+                });
+                alert('点击右上角「...」分享到朋友圈/朋友');
+            } else {
+                // 非微信环境
+                alert('点击右上角「...」分享到朋友圈/朋友');
+            }
         }
 
         // Close modal on outside click
